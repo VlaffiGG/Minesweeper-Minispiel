@@ -8,14 +8,14 @@ function erstelle2DArray(spalten, reihen) {
     return ary;
 }  // eine 2 dimensionale Data Struktur
 
-var gesammteMinen = 8;
+var gesammteMinen =12;
 var spalten = 10;
 var reihen = 10;
 var netz;  // globale Variable
 var z = 20;  // globale Variable, jede Zeile ist 20x20 Pixel groß
 
 function setup() {
-    createCanvas(161, 161);  // 1 Pixel groeßer, damit unten und rechts ein Rahmen                                         erscheint
+    createCanvas(181, 181);  // 1 Pixel groeßer, damit unten und rechts ein Rahmen                                         erscheint
     spalten = floor(width/z);  // berechnet Anzahl der Spalten und verhindert float Werte
     reihen = floor(height/z);  // berechnet Anzahl der Reihen
     netz = erstelle2DArray(spalten, reihen);
@@ -56,6 +56,11 @@ function mousePressed() {
         for (var j = 0; j < reihen; j++) {
             if (netz[i][j].beinhaltet(mouseX, mouseY)) {
                 netz[i][j].aufloesen();
+
+                if (netz[i][j].mine) {
+                    gameOver();
+                }
+
             }  // damit wird determiniert, auf welchem Feld sich die Maus befand
         }
     }
@@ -67,6 +72,14 @@ function draw() {
         for (var j = 0; j < reihen; j++) {
             netz[i][j].show();
         }  // um zu sehen, was die Zeilen beinhalten
+    }
+}
+
+function gameOver() {
+    for (var i = 0; i < spalten; i++) {
+        for (var j = 0; j < reihen; j++) {
+            netz[i][j].aufgeloest = true;
+        }  // beim GameOver werden die Zeilen aufgeloest somit kann man nicht mehr damit interagieren
     }
 }
 
@@ -150,3 +163,4 @@ Zeile.prototype.floodFill = function() {
         }
     } // FloodFill bietet sich sehr fuer eine Kettenreaktion zur Aufdeckung leerer Zeilen an
 }
+
