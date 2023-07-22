@@ -1,4 +1,4 @@
-// Warmup Projekt Minesweeper
+// Warmup Projekt Minesweeper - Vladimir Zyuzin
 
 function erstelle2DArray(spalten, reihen) {
     var ary = new Array(spalten);
@@ -8,13 +8,14 @@ function erstelle2DArray(spalten, reihen) {
     return ary;
 }  // eine 2 dimensionale Data Struktur
 
+var gesammteMinen = 8;
 var spalten = 10;
 var reihen = 10;
 var netz;  // globale Variable
 var z = 20;  // globale Variable, jede Zeile ist 20x20 Pixel groß
 
 function setup() {
-    createCanvas(161, 161);  // 1 Pixel groeßer, damit unten und rechts ein Rahmen erscheint
+    createCanvas(161, 161);  // 1 Pixel groeßer, damit unten und rechts ein Rahmen                                         erscheint
     spalten = floor(width/z);  // berechnet Anzahl der Spalten und verhindert float Werte
     reihen = floor(height/z);  // berechnet Anzahl der Reihen
     netz = erstelle2DArray(spalten, reihen);
@@ -23,12 +24,30 @@ function setup() {
             netz[i][j] = new Zeile(i, j, z);  // berechnet Pixel Standort jeder Zeile
         }
     }
+
+    var optionen = [];
+    for (var i = 0; i < spalten; i++) {
+        for (var j = 0; j < reihen; j++)  {
+            optionen.push([i, j]);  // waehlt die gesammteMinen Zeilen aus
+        }
+    }
+
+    for (var n = 0; n < gesammteMinen; n++) {
+        var index = floor(random(optionen.length));
+        var auswahl = optionen[index];
+        var i = auswahl[0];
+        var j = auswahl[1];
+        optionen.splice(index, 1);
+        netz[i][j].mine = true;
+    }  // loescht die gewaehlte Zeile aus der Liste aller Optionen
+
     for (var i = 0; i < spalten; i++) {
         for (var j = 0; j < reihen; j++) {
             netz[i][j].zaehleMinen();  // zaehlt alle Nachbarzeilen
         }
     }
-     // das Spielfeld besteht aus einem Netz von Zeilenobjekten
+
+    // das Spielfeld besteht aus einem Netz von Zeilenobjekten
     // Spalten können als x und Reihen koennen als y verbildlicht werden
 }  // fuer jede Spalte und Reihe wird im Loop eine Zeile erstellt
 
@@ -60,11 +79,7 @@ function Zeile(i, j, z) {  //Objekt für Zeilen
     this.i = i;
     this.j = j;
     this.nachbarAnzahl = 0;
-    if (random(1) < 0.5) {
-        this.mine = true;
-    } else {
-        this.mine = false;
-    }  // dies verteilt Minen zufaellig auf 50% der Felder
+    this.mine = false;
     this.aufgeloest = false;
 }  // unter diesen Bedingungen sind alle Zeilen verdeckt
 
@@ -79,9 +94,11 @@ Zeile.prototype.show = function() {
         } else {
             fill(30);
             rect(this.x, this.y, this.z, this.z);
-            textAlign(CENTER);
-            fill(255);
-            text(this.nachbarAnzahl, this.x + this.z*0.5, this.y + this.z - 5.5);
+            if (this.nachbarAnzahl > 0) {
+                textAlign(CENTER);
+                fill(255);
+                text(this.nachbarAnzahl, this.x + this.z*0.5, this.y + this.z - 5.5);
+            }
         }
     }
 }
@@ -111,6 +128,5 @@ Zeile.prototype.zaehleMinen = function() {
             }
         }
     }
-    console.log(gesamt);
     this.nachbarAnzahl = gesamt;
 }
