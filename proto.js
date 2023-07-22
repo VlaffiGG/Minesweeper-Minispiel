@@ -109,12 +109,17 @@ Zeile.prototype.beinhaltet = function(x, y) {
 
 Zeile.prototype.aufloesen = function() {
     this.aufgeloest = true;
+    if (this.nachbarAnzahl == 0) {
+        this.floodFill();
+    }
 } //  damit wird der Zeileninhalt veranschaulicht
 
 Zeile.prototype.zaehleMinen = function() {
     if(this.mine) {
-        return -1;
+        this.nachbarAnzahl = -1;
+        return;
     }  // bei Minen geschieht somit keine Berechnung der Nachbarn
+
     var gesamt = 0;
     for (var xversetzt = -1; xversetzt <= 1; xversetzt++) {
         for (var yversetzt = -1; yversetzt <= 1; yversetzt++) {
@@ -129,4 +134,19 @@ Zeile.prototype.zaehleMinen = function() {
         }
     }
     this.nachbarAnzahl = gesamt;
+}
+
+Zeile.prototype.floodFill = function() {
+    for (var xentfernt = -1; xentfernt <= 1; xentfernt++) {
+        for (var yentfernt = -1; yentfernt <= 1; yentfernt++) {
+            var i = this.i + xentfernt;
+            var j = this.j + yentfernt;
+            if (i > -1 && i < spalten && j > -1 && j < reihen) {
+                var nachbar = netz[i][j];
+                if (!nachbar.mine && !nachbar.aufgeloest) {
+                    nachbar.aufloesen();
+                }
+            }
+        }
+    } // FloodFill bietet sich sehr fuer eine Kettenreaktion zur Aufdeckung leerer Zeilen an
 }
