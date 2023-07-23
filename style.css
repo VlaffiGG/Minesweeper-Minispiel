@@ -1,17 +1,23 @@
 * {
-    background-color: rgb(245,245,245);
     box-sizing: border-box;
 }
 
+body {
+    background-color: #344e41; /* Dark green background */
+    font-family: 'Arial', sans-serif; /* Change font to Arial or any other jungle-themed font */
+}
+
 h1 {
-    font-family: Garamond;
+    font-family: 'Garamond', serif; /* Change the font for the heading */
     font-weight: bold;
     text-align: center;
+    color: #4CAF50; /* Light yellow color for the heading text */
 }
 
 canvas {
     margin-left: 45.2%;
-    border: rgb(0,0,0) outset 5px;
+    border: 5px outset #006400; /* Dark green border around the canvas */
+    background-color: #228b22; /* Dark green color for the canvas background */
 }
 
 p {

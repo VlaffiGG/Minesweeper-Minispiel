@@ -1,4 +1,4 @@
-// Warmup Projekt Minesweeper - Vladimir Zyuzin
+// Warmup Projekt Vinesweeper - Vladimir Zyuzin
 
 function erstelle2DArray(spalten, reihen) {
     var ary = new Array(spalten);
@@ -54,7 +54,7 @@ function setup() {
         }
     }
 
-     // das Spielfeld besteht aus einem Netz von Zeilenobjekten
+    // das Spielfeld besteht aus einem Netz von Zeilenobjekten
     // Spalten koennen als x und Reihen koennen als y verbildlicht werden
 }  // fuer jede Spalte und Reihe wird im Loop eine Zeile erstellt
 
@@ -91,7 +91,7 @@ function mousePressed() {
 
 function updateZaehler() {
     var zaehlerElement = document.getElementById("zaehler");
-    zaehlerElement.innerText = "Minen: " + markierteZeilen;
+    zaehlerElement.innerText = "Vines: " + markierteZeilen;
 }
 
 function draw() {
@@ -160,21 +160,32 @@ function Zeile(i, j, z) {  //Objekt fuer Zeilen
 Zeile.prototype.show = function() {
     stroke(0);
     noFill();
-    rect(this.x, this.y, this.z, this.z);
     if (this.aufgeloest) {
         if (this.mine) {
             fill(10);
-            square(this.x + this.z * 0.3, this.y + this.z * 0.3, this.z * 0.4);
+            var x1 = this.x + this.z * 0.5;
+            var y1 = this.y + this.z * 0.2;
+            var x2 = this.x + this.z * 0.8;
+            var y2 = this.y + this.z * 0.8;
+            var x3 = this.x + this.z * 0.2;
+            var y3 = this.y + this.z * 0.8;
+            triangle(x1, y1, x2, y2, x3, y3);
         } else {
             fill(30);
             rect(this.x, this.y, this.z, this.z);
             if (this.nachbarAnzahl > 0) {
                 textAlign(CENTER);
                 fill(255);
-                text(this.nachbarAnzahl, this.x + this.z*0.5, this.y + this.z - 5.5);
+                text(this.nachbarAnzahl, this.x + this.z * 0.5, this.y + this.z - 5.5);
             }
         }
-    } else if (this.markiert) {
+    } else {
+        fill(200);
+        rect(this.x, this.y, this.z, this.z);
+    }
+
+    //
+    if (this.markiert) {
         fill(200, 0, 0);
         rect(this.x, this.y, this.z, this.z);
     }
