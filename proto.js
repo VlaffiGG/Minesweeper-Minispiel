@@ -8,19 +8,19 @@ function erstelle2DArray(spalten, reihen) {
     return ary;
 }  // eine 2 dimensionale Data Struktur
 
-var gesamteMinen = 12;
+var gesamteMinen = 8;
 var spalten = 10;
 var reihen = 10;
 var netz;  // globale Variable
 var z = 20;  // globale Variable, jede Zeile ist 20x20 Pixel groß
-var markedFields = gesamteMinen; // initializiert den Zähler mit der gesamten Anzahl der Minen
+var markierteZeilen = gesamteMinen; // initializiert den Zaehler mit der gesamten Anzahl der Minen
 
 
 function setup() {
     createCanvas(181, 181);  // 1 Pixel groeßer, fuer einen Rahmen unten und rechts
     canvas = document.getElementById('defaultCanvas0');
     canvas.addEventListener('contextmenu', function(e) {
-        e.preventDefault();  // verhindert die originale Funktion eines Rechtklicks
+        e.preventDefault();  // verhindert die urspruengliche Funktion eines Rechtklicks
     });
 
     spalten = floor(width/z);  // berechnet Anzahl der Spalten und verhindert float Werte
@@ -55,12 +55,12 @@ function setup() {
     }
 
      // das Spielfeld besteht aus einem Netz von Zeilenobjekten
-    // Spalten können als x und Reihen koennen als y verbildlicht werden
+    // Spalten koennen als x und Reihen koennen als y verbildlicht werden
 }  // fuer jede Spalte und Reihe wird im Loop eine Zeile erstellt
 
 function mousePressed() {
-    // überprüft, ob das Spiel bereits gewonnen oder verloren wurde
-    if (checkGameWon() || isGameOver()) {
+    // prueft, ob das Spiel bereits gewonnen oder verloren wurde
+    if (isGameWon() || isGameOver()) {
         return;
     }
 
@@ -69,18 +69,18 @@ function mousePressed() {
             if (netz[i][j].beinhaltet(mouseX, mouseY)) {
                 if (mouseButton === RIGHT) {
                     if (netz[i][j].markiert) {
-                        markedFields++; // wenn eine markierte Zeile gerechtsklickt wird, erhöht sich der Zähler
+                        markierteZeilen++; // wenn eine markierte Zeile gerechtsklickt wird, geht der Zaehler hoch
                     } else {
-                        markedFields--; // wenn eine unmarkierte Zeile gerechtsklickt wird, verringert sich der Zähler
+                        markierteZeilen--; // wenn eine unmarkierte Zeile gerechtsklickt wird, geht der Zaehler runter
                     }
                     netz[i][j].markiert = !netz[i][j].markiert;
-                    updateCounter(); // ruft Funktion zum Update der Zähler Anzeige
+                    updateZaehler(); // ruft Funktion zum Update der Zaehler Anzeige
                 } else {
                     netz[i][j].aufloesen();
 
                     if (netz[i][j].mine) {
                         gameOver();
-                    } else if (checkGameWon()) {
+                    } else if (isGameWon()) {
                         gameWon();
                     }
                 }
@@ -89,9 +89,9 @@ function mousePressed() {
     }
 }
 
-function updateCounter() {
-    var counterElement = document.getElementById("counter");
-    counterElement.innerText = "Minen: " + markedFields;
+function updateZaehler() {
+    var zaehlerElement = document.getElementById("zaehler");
+    zaehlerElement.innerText = "Minen: " + markierteZeilen;
 }
 
 function draw() {
@@ -107,11 +107,11 @@ function gameOver() {
     for (var i = 0; i < spalten; i++) {
         for (var j = 0; j < reihen; j++) {
             netz[i][j].aufgeloest = true;
-        }  // beim GameOver werden die Zeilen aufgeloest somit kann man nicht mehr damit interagieren
+        }  // beim Game Over werden die Zeilen aufgeloest somit kann man nicht mehr damit interagieren
 
-        var counterElement = document.getElementById("counter");
-        counterElement.innerText = "Game Over";
-    }  // Zeigt eine Game Over Message an, wenn eine Mine geklickt wird
+        var zaehlerElement = document.getElementById("zaehler");
+        zaehlerElement.innerText = "Game Over";
+    }  // Zeigt eine Game Over Nachricht an, wenn eine Mine geklickt wird
 }
 
 function isGameOver() {
@@ -119,14 +119,14 @@ function isGameOver() {
         for (var j = 0; j < reihen; j++) {
             var tile = netz[i][j];
             if (tile.mine && tile.aufgeloest) {
-                return true; // Spiel wurde verloren
+                return true; // Spiel ist verloren
             }
         }
     }
-    return false;  // Spiel wurde nicht verloren
+    return false;  // Spiel ist nicht verloren
 }
 
-function checkGameWon() {
+function isGameWon() {
     for (var i = 0; i < spalten; i++) {
         for (var j = 0; j < reihen; j++) {
             var tile = netz[i][j];
@@ -139,13 +139,13 @@ function checkGameWon() {
 }
 
 function gameWon() {
-    var counterElement = document.getElementById("counter");
-    counterElement.innerText = "You Won!";
+    var zaehlerElement = document.getElementById("zaehler");
+    zaehlerElement.innerText = "Gewonnen!";
 }
 
-// Code für Zeilen
+// Code fuer Zeilen
 
-function Zeile(i, j, z) {  //Objekt für Zeilen
+function Zeile(i, j, z) {  //Objekt fuer Zeilen
     this.x = i * z;
     this.y = j * z;
     this.z = z;
