@@ -10,7 +10,7 @@ h1 {
 }
 
 canvas {
-    margin-left: 340px;
+    margin-left: 45.2%;
     border: rgb(0,0,0) outset 5px;
 }
 
@@ -18,13 +18,13 @@ p {
     position: absolute;
     font-family: Trebuchet MS;
     text-align: center;
-    margin-left: 390px;
+    margin-left: 914px;
     margin-top: 200px;
 }
 
 div {
     display: inline-block;
     position: absolute;
-    margin-left: 395px;
+    margin-left: 915px;
     margin-top: -20px;
 }
