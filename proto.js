@@ -8,14 +8,21 @@ function erstelle2DArray(spalten, reihen) {
     return ary;
 }  // eine 2 dimensionale Data Struktur
 
-var gesammteMinen =12;
+var gesamteMinen = 12;
 var spalten = 10;
 var reihen = 10;
 var netz;  // globale Variable
 var z = 20;  // globale Variable, jede Zeile ist 20x20 Pixel groß
+var markedFields = gesamteMinen; // initializiert den Zähler mit der gesamten Anzahl der Minen
+
 
 function setup() {
-    createCanvas(181, 181);  // 1 Pixel groeßer, damit unten und rechts ein Rahmen                                         erscheint
+    createCanvas(181, 181);  // 1 Pixel groeßer, fuer einen Rahmen unten und rechts
+    canvas = document.getElementById('defaultCanvas0');
+    canvas.addEventListener('contextmenu', function(e) {
+        e.preventDefault();  // verhindert die originale Funktion eines Rechtklicks
+    });
+
     spalten = floor(width/z);  // berechnet Anzahl der Spalten und verhindert float Werte
     reihen = floor(height/z);  // berechnet Anzahl der Reihen
     netz = erstelle2DArray(spalten, reihen);
@@ -28,18 +35,18 @@ function setup() {
     var optionen = [];
     for (var i = 0; i < spalten; i++) {
         for (var j = 0; j < reihen; j++)  {
-            optionen.push([i, j]);  // waehlt die gesammteMinen Zeilen aus
+            optionen.push([i, j]);  // waehlt die gesamteMinen Zeilen aus
         }
     }
 
-    for (var n = 0; n < gesammteMinen; n++) {
+    for (var n = 0; n < gesamteMinen; n++) {
         var index = floor(random(optionen.length));
         var auswahl = optionen[index];
         var i = auswahl[0];
         var j = auswahl[1];
         optionen.splice(index, 1);
         netz[i][j].mine = true;
-    }  // loescht die gewaehlte Zeile aus der Liste aller Optionen
+    }  // loescht die gewaehlte Zeile aus der Liste aller weiteren Optionen
 
     for (var i = 0; i < spalten; i++) {
         for (var j = 0; j < reihen; j++) {
@@ -47,23 +54,44 @@ function setup() {
         }
     }
 
-    // das Spielfeld besteht aus einem Netz von Zeilenobjekten
+     // das Spielfeld besteht aus einem Netz von Zeilenobjekten
     // Spalten können als x und Reihen koennen als y verbildlicht werden
 }  // fuer jede Spalte und Reihe wird im Loop eine Zeile erstellt
 
 function mousePressed() {
+    // überprüft, ob das Spiel bereits gewonnen oder verloren wurde
+    if (checkGameWon() || isGameOver()) {
+        return;
+    }
+
     for (var i = 0; i < spalten; i++) {
         for (var j = 0; j < reihen; j++) {
             if (netz[i][j].beinhaltet(mouseX, mouseY)) {
-                netz[i][j].aufloesen();
+                if (mouseButton === RIGHT) {
+                    if (netz[i][j].markiert) {
+                        markedFields++; // wenn eine markierte Zeile gerechtsklickt wird, erhöht sich der Zähler
+                    } else {
+                        markedFields--; // wenn eine unmarkierte Zeile gerechtsklickt wird, verringert sich der Zähler
+                    }
+                    netz[i][j].markiert = !netz[i][j].markiert;
+                    updateCounter(); // ruft Funktion zum Update der Zähler Anzeige
+                } else {
+                    netz[i][j].aufloesen();
 
-                if (netz[i][j].mine) {
-                    gameOver();
+                    if (netz[i][j].mine) {
+                        gameOver();
+                    } else if (checkGameWon()) {
+                        gameWon();
+                    }
                 }
-
-            }  // damit wird determiniert, auf welchem Feld sich die Maus befand
+            }
         }
     }
+}
+
+function updateCounter() {
+    var counterElement = document.getElementById("counter");
+    counterElement.innerText = "Minen: " + markedFields;
 }
 
 function draw() {
@@ -80,7 +108,39 @@ function gameOver() {
         for (var j = 0; j < reihen; j++) {
             netz[i][j].aufgeloest = true;
         }  // beim GameOver werden die Zeilen aufgeloest somit kann man nicht mehr damit interagieren
+
+        var counterElement = document.getElementById("counter");
+        counterElement.innerText = "Game Over";
+    }  // Zeigt eine Game Over Message an, wenn eine Mine geklickt wird
+}
+
+function isGameOver() {
+    for (var i = 0; i < spalten; i++) {
+        for (var j = 0; j < reihen; j++) {
+            var tile = netz[i][j];
+            if (tile.mine && tile.aufgeloest) {
+                return true; // Spiel wurde verloren
+            }
+        }
     }
+    return false;  // Spiel wurde nicht verloren
+}
+
+function checkGameWon() {
+    for (var i = 0; i < spalten; i++) {
+        for (var j = 0; j < reihen; j++) {
+            var tile = netz[i][j];
+            if (!tile.mine && !tile.aufgeloest) {
+                return false; // Spiel ist noch nicht gewonnen
+            }
+        }
+    }
+    return true; // Spiel ist gewonnen
+}
+
+function gameWon() {
+    var counterElement = document.getElementById("counter");
+    counterElement.innerText = "You Won!";
 }
 
 // Code für Zeilen
@@ -94,7 +154,8 @@ function Zeile(i, j, z) {  //Objekt für Zeilen
     this.nachbarAnzahl = 0;
     this.mine = false;
     this.aufgeloest = false;
-}  // unter diesen Bedingungen sind alle Zeilen verdeckt
+    this.markiert = false;
+}  // unter diesen Bedingungen sind alle Zeilen verdeckte, normale und unmarkierte Felder
 
 Zeile.prototype.show = function() {
     stroke(0);
@@ -102,7 +163,7 @@ Zeile.prototype.show = function() {
     rect(this.x, this.y, this.z, this.z);
     if (this.aufgeloest) {
         if (this.mine) {
-            fill(40);
+            fill(10);
             square(this.x + this.z * 0.3, this.y + this.z * 0.3, this.z * 0.4);
         } else {
             fill(30);
@@ -113,6 +174,9 @@ Zeile.prototype.show = function() {
                 text(this.nachbarAnzahl, this.x + this.z*0.5, this.y + this.z - 5.5);
             }
         }
+    } else if (this.markiert) {
+        fill(200, 0, 0);
+        rect(this.x, this.y, this.z, this.z);
     }
 }
 
@@ -122,7 +186,7 @@ Zeile.prototype.beinhaltet = function(x, y) {
 
 Zeile.prototype.aufloesen = function() {
     this.aufgeloest = true;
-    if (this.nachbarAnzahl == 0) {
+    if (this.nachbarAnzahl === 0) {
         this.floodFill();
     }
 } //  damit wird der Zeileninhalt veranschaulicht
@@ -163,4 +227,3 @@ Zeile.prototype.floodFill = function() {
         }
     } // FloodFill bietet sich sehr fuer eine Kettenreaktion zur Aufdeckung leerer Zeilen an
 }
-

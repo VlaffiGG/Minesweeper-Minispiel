@@ -1,0 +1,30 @@
+* {
+    background-color: rgb(245,245,245);
+    box-sizing: border-box;
+}
+
+h1 {
+    font-family: Garamond;
+    font-weight: bold;
+    text-align: center;
+}
+
+canvas {
+    margin-left: 340px;
+    border: rgb(0,0,0) outset 5px;
+}
+
+p {
+    position: absolute;
+    font-family: Trebuchet MS;
+    text-align: center;
+    margin-left: 390px;
+    margin-top: 200px;
+}
+
+div {
+    display: inline-block;
+    position: absolute;
+    margin-left: 395px;
+    margin-top: -20px;
+}
