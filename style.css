@@ -3,34 +3,37 @@
 }
 
 body {
-    background-color: #344e41; /* Dark green background */
-    font-family: 'Arial', sans-serif; /* Change font to Arial or any other jungle-themed font */
+    background-color: #344e41;
+    font-family: 'Arial', sans-serif;
 }
 
 h1 {
-    font-family: 'Garamond', serif; /* Change the font for the heading */
+    font-family: 'Garamond', serif;
     font-weight: bold;
     text-align: center;
-    color: #4CAF50; /* Light yellow color for the heading text */
+    color: #4CAF50;
 }
 
 canvas {
-    margin-left: 45.2%;
-    border: 5px outset #006400; /* Dark green border around the canvas */
-    background-color: #228b22; /* Dark green color for the canvas background */
+    margin: 0 auto;
+    border: 5px outset #006400;
+    background-color: #228b22;
+    display: block;
 }
 
 p {
+    display: inline-block;
     position: absolute;
-    font-family: Trebuchet MS;
-    text-align: center;
-    margin-left: 914px;
+    left: 50%;
+    transform: translateX(-50%);
     margin-top: 200px;
 }
 
 div {
     display: inline-block;
     position: absolute;
-    margin-left: 915px;
+    left: 50%;
+    transform: translateX(-50%);
     margin-top: -20px;
 }
+
